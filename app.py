@@ -115,7 +115,14 @@ def run_crawl(url):
         time.sleep(random.uniform(1, 2))
 
         gomain_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(., '홈')]")))
-        gomain_button.click()
+
+        # 스크롤하여 요소가 보이게 하기
+        driver.execute_script("arguments[0].scrollIntoView(true);", gomain_button)
+        time.sleep(1)  # 스크롤 후 기다리기
+
+        # JavaScript를 사용해 클릭
+        driver.execute_script("arguments[0].click();", gomain_button)
+
 
         collected_data = []
         try:

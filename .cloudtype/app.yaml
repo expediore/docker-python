@@ -1,0 +1,13 @@
+name: docker-python
+app: dockerfile@
+options:
+  ports: "5001"
+  dockerfile: Dockerfile
+  env:
+    - name: FLASK_ENV
+      value: production
+context:
+  git:
+    url: https://github.com/expediore/docker-python.git
+    branch: main
+  preset: dockerfile-python

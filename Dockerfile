@@ -22,6 +22,7 @@ ARG FLASK_ENV
 
 ENV FLASK_ENV=${FLASK_ENV}
 
-EXPOSE 5000
+EXPOSE 5001
 
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+# WSGI, 포트 번호, 모듈명 등은 각 소스 코드에 알맞게 수정하여 배포 진행
+CMD ["gunicorn", "-b", "0.0.0.0:5001", "app:app"]

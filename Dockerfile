@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Create directory for webdriver-manager cache
+RUN mkdir -p /root/.wdm
+
 # Install Python dependencies
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt

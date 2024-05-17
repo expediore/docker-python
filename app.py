@@ -88,6 +88,9 @@ def run_crawl(url):
     options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920x1080')
 
+    os.environ['WDM_LOCAL'] = '1'
+    os.environ['WDM_CACHE'] = '/root/.wdm'
+
     service = ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 

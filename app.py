@@ -88,8 +88,8 @@ def run_crawl(url):
     options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920x1080')
 
-    os.environ['WDM_LOCAL'] = '1'
-    os.environ['WDM_CACHE'] = '/root/.wdm'
+    os.environ['WDM_LOCAL'] = '1'  # 로컬 캐시 사용
+    os.environ['WDM_CACHE_DIR'] = '/tmp/.wdm'  # 캐시 디렉토리 설정
 
     service = ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)

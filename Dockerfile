@@ -29,6 +29,11 @@ RUN wget -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/$
 ENV WDM_LOCAL 1
 ENV WDM_CACHE_DIR /app/.wdm
 
+# Create directories with appropriate permissions
+RUN mkdir -p /home/app/.local/share/applications \
+    && chmod -R 777 /home/app/.local/share/applications
+
+
 # Install Python dependencies
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt

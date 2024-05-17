@@ -18,9 +18,9 @@ import os
 from flask_cors import CORS
 from webdriver_manager.chrome import ChromeDriverManager
 
-os.environ['WDM_LOCAL'] = '1'  # 로컬 캐시 사용
-os.environ['WDM_CACHE_DIR'] = '/app/.wdm'  # 캐시 디렉토리 설정
-
+# os.environ['WDM_LOCAL'] = '1'  # 로컬 캐시 사용
+# os.environ['WDM_CACHE_DIR'] = '/app/.wdm'  # 캐시 디렉토리 설정
+print("temp")
 
 def svg_to_data_url(svg_data):
     # SVG 데이터를 Base64로 인코딩
@@ -38,6 +38,7 @@ sheet = client.open('auto_curation').get_worksheet(0)  # 스프레드시트 이�
 
 @app.route('/trigger_crawl', methods=['POST'])
 def trigger_crawl():
+    print("trigger 시작")
     data = request.get_json()
     url = data.get('url')  # 스크립트에서 받은 URL 처리
     # URL로 크롤링 로직을 동작시키는 함수 호출

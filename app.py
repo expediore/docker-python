@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -16,6 +16,8 @@ from datetime import datetime, timezone
 import base64
 import os
 from flask_cors import CORS
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 
 
@@ -86,7 +88,7 @@ def run_crawl(url):
     options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920x1080')
 
-    service = Service('/usr/local/bin/chromedriver')
+    service = ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
     # 화면 크기 목록
@@ -331,5 +333,5 @@ def run_crawl(url):
         driver.quit()
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 500))
     app.run(host='0.0.0.0', port=port, debug=True)

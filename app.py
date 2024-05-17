@@ -89,7 +89,7 @@ def run_crawl(url):
     options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920x1080')
 
-    service = ChromeService(ChromeDriverManager(path="/app/.wdm").install())
+    service = ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
     # 화면 크기 목록

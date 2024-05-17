@@ -42,18 +42,27 @@ def trigger_crawl():
     data = request.get_json()
     url = data.get('url')  # 스크립트에서 받은 URL 처리
     # URL로 크롤링 로직을 동작시키는 함수 호출
-    result = run_crawl(url)  # 'run_crawl' 함수를 적절하게 수정하여 URL을 인자로 받을 수 있도록 해야 함
+    try:
+        result = run_crawl(url)
+    except Exception as e:
+        print(f"Error during crawling: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
     # 중복으로 jsonify하면 TypeError: Object of type Response is not JSON serializable
     # return jsonify(result)
-    if isinstance(result, dict) and result.get("status") == "error":
-        return jsonify(result), 500  # 크롤링 중 에러가 발생한 경우
-    if save_to_mongodb(result):
-        return jsonify({"status": "success", "message": "Data saved to MongoDB", "data": result})
-    else:
-        return jsonify({"status": "error", "message": "Failed to save data to MongoDB"}), 500
-
+    try:
+        if isinstance(result, dict) and result.get("status") == "error":
+            return jsonify(result), 500
+        if save_to_mongodb(result):
+            return jsonify({"status": "success", "message": "Data saved to MongoDB", "data": result})
+        else:
+            return jsonify({"status": "error", "message": "Failed to save data to MongoDB"}), 500
+    except Exception as e:
+        print(f"Error in MongoDB operation: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 # mongodb 에 저장
 def save_to_mongodb(data):
+    print("Attempting to save data to MongoDB")
     try:
         client = MongoClient(
             "mongodb+srv://admin:thhvUgtZ0kku4WuK@cluster0.vrzzp.mongodb.net/hwikDB?retryWrites=true&w=majority",
@@ -66,6 +75,7 @@ def save_to_mongodb(data):
                 doc["createdAt"] = datetime.now(timezone.utc)
                 inserted_id = collection.insert_one(doc).inserted_id
                 doc["_id"] = str(inserted_id)  # _id를 문자열로 변환
+            print("Data saved to MongoDB")
             return True
     except Exception as e:
         print("Error saving to MongoDB:", str(e))
@@ -73,6 +83,7 @@ def save_to_mongodb(data):
 
 # @app.route('/run_crawl', methods=['POST'])
 def run_crawl(url):
+    print(f"Starting crawl for URL: {url}")
     # print("start run")
     # data = request.get_json()
     # print("data", data)
@@ -341,5 +352,4 @@ def run_crawl(url):
         driver.quit()
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5001))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)

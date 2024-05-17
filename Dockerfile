@@ -43,6 +43,9 @@ COPY hwik_key.json .
 COPY start.sh .
 RUN chmod +x start.sh
 
+# 권한 설정
+RUN chmod -R 777 /app
+
 # Expose port 5000
 EXPOSE 5000
 

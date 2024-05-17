@@ -31,8 +31,12 @@ COPY . .
 # Copy the Google service account key file
 COPY hwik_key.json .
 
+# Copy the start.sh script and give it execution permissions
+COPY start.sh .
+RUN chmod +x start.sh
+
 # Expose port 5000
 EXPOSE 5000
 
 # Command to run the application
-CMD ["gunicorn", "--config", "0.0.0.0:$PORT", "app:app"]
+CMD ["./start.sh"]

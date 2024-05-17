@@ -19,7 +19,7 @@ from flask_cors import CORS
 from webdriver_manager.chrome import ChromeDriverManager
 
 os.environ['WDM_LOCAL'] = '1'  # 로컬 캐시 사용
-os.environ['WDM_CACHE_DIR'] = '/tmp/.wdm'  # 캐시 디렉토리 설정
+os.environ['WDM_CACHE_DIR'] = '/app/.wdm'  # 캐시 디렉토리 설정
 
 
 def svg_to_data_url(svg_data):
@@ -89,7 +89,7 @@ def run_crawl(url):
     options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920x1080')
 
-    service = ChromeService(ChromeDriverManager().install())
+    service = ChromeService(ChromeDriverManager(path="/app/.wdm").install())
     driver = webdriver.Chrome(service=service, options=options)
 
     # 화면 크기 목록

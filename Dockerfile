@@ -1,28 +1,35 @@
-FROM python:3.9-slim-buster
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED 1
+# Set the working directory in the container
+WORKDIR /app
 
-ARG UID=1000
-ARG GID=1000
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    gnupg \
+    curl \
+    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update && apt-get install -y \
+    google-chrome-stable \
+    && CHROMEDRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` \
+    && wget -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" \
+    && unzip /tmp/chromedriver.zip -d /usr/local/bin/ \
+    && rm /tmp/chromedriver.zip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -g "${GID}" python \
-  && useradd --create-home --no-log-init -u "${UID}" -g "${GID}" python
-WORKDIR /home/python
+# Install Python dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY --chown=python:python requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+# Copy the rest of the application
+COPY . .
 
-# USER 변경은 반드시 pip 패키지 설치 스크립트 이후에 작성되어야 함
-USER python:python
-ENV PATH="/home/${USER}/.local/bin:${PATH}"
-COPY --chown=python:python . .
+# Expose port 5000
+EXPOSE 5000
 
-ARG FLASK_ENV
-
-ENV FLASK_ENV=${FLASK_ENV}
-
-EXPOSE 5001
-
-# WSGI, 포트 번호, 모듈명 등은 각 소스 코드에 알맞게 수정하여 배포 진행
-CMD ["gunicorn", "-b", "0.0.0.0:5001", "app:app"]
+# Command to run the application
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "app:app"]

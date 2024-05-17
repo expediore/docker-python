@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -79,7 +80,14 @@ def run_crawl(url):
     options.add_argument(f'user-agent={user_agent}')
     options.add_argument('--incognito')
     options.add_experimental_option('detach', True)
-    driver = webdriver.Chrome(options=options)
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--window-size=1920x1080')
+
+    service = Service('/usr/local/bin/chromedriver')
+    driver = webdriver.Chrome(service=service, options=options)
 
     # 화면 크기 목록
     pc_device_sizes = ["1920,1440", "1920,1200", "1920,1080", "1600,1200", "1600,900",
@@ -152,7 +160,7 @@ def run_crawl(url):
                 try:
                     lodgment_roomname = driver.find_element(By.CSS_SELECTOR, '.HBtVH').text
                 except NoSuchElementException:
-                    lodgment_roomname = 'None'
+                    lodgment_roomname = []
 
                 try:
                     lodgment_information_elements = driver.find_elements(By.CSS_SELECTOR, '.iSeSf')
@@ -176,7 +184,7 @@ def run_crawl(url):
                             # 퇴실 시간 추출
                             check_out_time = info.split("퇴실", 1)[1].split(",")[0].strip()
                 except NoSuchElementException:
-                    lodgment_information = 'None'
+                    lodgment_information = []
 
                 try:
                     lodgment_facility_elements = driver.find_elements(By.CSS_SELECTOR, '.Ex6zM')
@@ -202,7 +210,7 @@ def run_crawl(url):
                                     "img" : img_src}
                         lodgment_facility.append(facility)
                 except NoSuchElementException:
-                    lodgment_facility = 'None'
+                    lodgment_facility = []
 
                 try:
                     lodgment_structure_elements = driver.find_elements(By.CSS_SELECTOR, '.k2AT3')
@@ -217,12 +225,12 @@ def run_crawl(url):
                         structure = [first_text, svg_data, second_text]
                         lodgment_structure.append(structure)
                 except NoSuchElementException:
-                    lodgment_structure = 'None'
+                    lodgment_structure = []
 
                 try:
                     lodgment_introduce = driver.find_element(By.CSS_SELECTOR, '.nwx9d').text
                 except NoSuchElementException:
-                    lodgment_introduce = 'None'
+                    lodgment_introduce = []
 
                 try:
                     lodgment_rule = driver.find_element(By.CSS_SELECTOR, '.yloSp').text
@@ -233,7 +241,7 @@ def run_crawl(url):
                     }
                     lodgment_cautions.append(cautions)
                 except NoSuchElementException:
-                    lodgment_cautions = 'None'
+                    lodgment_cautions = []
 
                 try:
                     expand_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '._zphO')))
@@ -261,7 +269,7 @@ def run_crawl(url):
                     lodgment_curation.append(curation_dict)
                     
                 except NoSuchElementException:
-                    lodgment_curation = 'None'
+                    lodgment_curation = []
 
 
                 if len(list_rooms) > 1 :

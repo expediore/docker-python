@@ -9,7 +9,8 @@ dnspython==2.6.1
 Flask==3.0.3
 Flask-Cors==4.0.1
 google-auth==2.29.0
-google-auth-oauthlib==1.2.0
+google-auth-oauthlib==1.2.
+gunicorn
 gspread==6.1.1
 h11==0.14.0
 httplib2==0.22.0

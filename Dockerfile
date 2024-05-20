@@ -53,7 +53,7 @@ RUN chmod +x start.sh
 RUN chmod -R 777 /app
 
 # Expose port 8080
-EXPOSE 5002
+EXPOSE 5003
 
 # Command to run the application
 CMD ["./start.sh"]

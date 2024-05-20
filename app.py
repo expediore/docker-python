@@ -17,10 +17,10 @@ import base64
 import os
 from flask_cors import CORS
 from webdriver_manager.chrome import ChromeDriverManager
+import logging
 
-# os.environ['WDM_LOCAL'] = '1'  # 로컬 캐시 사용
-# os.environ['WDM_CACHE_DIR'] = '/app/.wdm'  # 캐시 디렉토리 설정
-print("temp")
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def svg_to_data_url(svg_data):
     # SVG 데이터를 Base64로 인코딩
@@ -126,12 +126,17 @@ def run_crawl(url):
 
         print("창 크기 조절 완료")
 
-        WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.ID, "entryIframe")))
-        driver.switch_to.default_content()
-        WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.ID, "entryIframe")))
-        time.sleep(random.uniform(1, 2))
+        logging.info("Iframe 진입")
 
-        print("Iframe 진입 완료")
+        try :
+            WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.ID, "entryIframe")))
+            driver.switch_to.default_content()
+            WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.ID, "entryIframe")))
+            time.sleep(random.uniform(1, 2))
+        except Exception as e:
+            logging.error("An error occurred during entering Iframe", exc_info=True)
+            return {"status": "error", "message": str(e)}
+
 
         gomain_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(., '홈')]")))
 

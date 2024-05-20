@@ -100,10 +100,12 @@ def run_crawl(url):
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
 
-    print("1step")
+    print("셀레니움 설정 완료")
 
     service = ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
+
+    print("셀리니움 가동 완료")
 
     # 화면 크기 목록
     pc_device_sizes = ["1920,1440", "1920,1200", "1920,1080", "1600,1200", "1600,900",
@@ -122,10 +124,14 @@ def run_crawl(url):
         driver.get(url)
         time.sleep(random.uniform(1, 2))
 
+        print("창 크기 조절 완료")
+
         WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.ID, "entryIframe")))
         driver.switch_to.default_content()
         WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.ID, "entryIframe")))
         time.sleep(random.uniform(1, 2))
+
+        print("Iframe 진입 완료")
 
         gomain_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(., '홈')]")))
 
@@ -135,6 +141,8 @@ def run_crawl(url):
 
         # JavaScript를 사용해 클릭
         driver.execute_script("arguments[0].click();", gomain_button)
+
+        print("홈 버튼 클릭")
 
 
         collected_data = []

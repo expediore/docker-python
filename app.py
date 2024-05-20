@@ -100,6 +100,8 @@ def run_crawl(url):
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-gpu')
 
+    print("1step")
+
     service = ChromeService(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
